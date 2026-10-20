@@ -1,20 +1,28 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Plataforma E-Commerce
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <div id="input">
+    <ion-label position="floating">Precio máximo</ion-label>
+    <ion-input type="number" [(ngModel)]="precioMaximo" placeholder="Filtrar por precio máximo"></ion-input>
+    <ion-button (click)="aplicarFiltro()">Aplicar filtro</ion-button>
   </div>
+  
+  <ion-card *ngFor="let orden of ordenesFiltradas">
+    <ion-card-header>
+      <ion-card-title>{{ orden.title }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Identificador:</strong> {{ orden.id }}</p>
+      <p><strong>Usuario:</strong> {{ orden.userId }}</p>
+      <p><strong>Precio:</strong> {{ orden.price }}</p>
+      <p><strong>Existencias:</strong> {{ orden.stock }}</p>
+    </ion-card-content>
+  </ion-card>
+  
 </ion-content>
