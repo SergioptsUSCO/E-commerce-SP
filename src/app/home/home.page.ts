@@ -86,9 +86,9 @@ export class HomePage implements OnInit {
     }
 
     return this.ordenes.filter((orden) => {
-      const minCondition = this.precioMinimoAplicado === null || orden.price >= this.precioMinimoAplicado!;
-      const maxCondition = this.precioMaximoAplicado === null || orden.price <= this.precioMaximoAplicado!;
-      return minCondition && maxCondition;
+      const minCondicion = this.precioMinimoAplicado === null || orden.price >= this.precioMinimoAplicado!;
+      const maxCondicion = this.precioMaximoAplicado === null || orden.price <= this.precioMaximoAplicado!;
+      return minCondicion && maxCondicion;
     });
   }
 
@@ -105,7 +105,7 @@ export class HomePage implements OnInit {
     if (this.precioMaximo !== null && this.precioMaximo < 0) {
       this.precioMaximoAplicado = null;
       const toast = await this.toastController.create({
-        message: 'El precio máximo no puede ser negativo. Se mostrará la lista completa.',
+        message: 'El precio no puede ser negativo. Se mostrará la lista completa.',
         duration: 2500,
         position: 'bottom'
       });
@@ -118,7 +118,7 @@ export class HomePage implements OnInit {
 
     if (this.precioMaximoAplicado !== null && this.precioMaximoAplicado > 0) {
     const toast = await this.toastController.create({
-      message: 'Filtro de precio máximo aplicado',
+      message: 'Filtro de precio aplicado',
       duration: 2500,
       position: 'bottom'
     });
@@ -126,7 +126,7 @@ export class HomePage implements OnInit {
     }
     else if (this.precioMaximoAplicado === null) {
       const toast = await this.toastController.create({
-        message: 'Filtro de precio máximo eliminado',
+        message: 'Filtro de precio eliminado',
         duration: 2500,
         position: 'bottom'
       });
