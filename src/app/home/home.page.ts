@@ -72,20 +72,66 @@ import {
 
 export class HomePage implements OnInit {
   private apiService = inject(ApiService);
+  private toastController = inject(ToastController);
   ordenes: OrdenesModelo[] = [];
+  precioMinimo: number | null = null;
   precioMaximo: number | null = null;
+  modalFiltroAbierto = false;
+  private precioMinimoAplicado: number | null = null;
   private precioMaximoAplicado: number | null = null;
 
   get ordenesFiltradas(): OrdenesModelo[] {
-    if (this.precioMaximoAplicado === null) {
+    if (this.precioMinimoAplicado === null && this.precioMaximoAplicado === null) {
       return this.ordenes;
     }
 
-    return this.ordenes.filter((orden) => orden.price <= this.precioMaximoAplicado!);
+    return this.ordenes.filter((orden) => {
+      const minCondition = this.precioMinimoAplicado === null || orden.price >= this.precioMinimoAplicado!;
+      const maxCondition = this.precioMaximoAplicado === null || orden.price <= this.precioMaximoAplicado!;
+      return minCondition && maxCondition;
+    });
   }
 
-  aplicarFiltro(): void {
+  abrirModalFiltro(): void {
+    this.modalFiltroAbierto = true;
+  }
+
+  async continuarFiltro(): Promise<void> {
+    await this.aplicarFiltro();
+    this.modalFiltroAbierto = false;
+  }
+
+  async aplicarFiltro(): Promise<void> {
+    if (this.precioMaximo !== null && this.precioMaximo < 0) {
+      this.precioMaximoAplicado = null;
+      const toast = await this.toastController.create({
+        message: 'El precio máximo no puede ser negativo. Se mostrará la lista completa.',
+        duration: 2500,
+        position: 'bottom'
+      });
+      await toast.present();
+      return;
+    }
+
     this.precioMaximoAplicado = this.precioMaximo;
+    this.precioMinimoAplicado = this.precioMinimo;
+
+    if (this.precioMaximoAplicado !== null && this.precioMaximoAplicado > 0) {
+    const toast = await this.toastController.create({
+      message: 'Filtro de precio máximo aplicado',
+      duration: 2500,
+      position: 'bottom'
+    });
+    await toast.present();
+    }
+    else if (this.precioMaximoAplicado === null) {
+      const toast = await this.toastController.create({
+        message: 'Filtro de precio máximo eliminado',
+        duration: 2500,
+        position: 'bottom'
+      });
+      await toast.present();
+    }
   }
 
   ngOnInit() {
@@ -100,7 +146,9 @@ export class HomePage implements OnInit {
           price: Math.floor(Math.random() * 10000)
         }));
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error('Error al cargar las órdenes:', err);
+      }
     });
   }
 
